@@ -20,6 +20,11 @@ public class Player extends Unit {
     private int score;
 
     /**
+     * The number of lives the player has.
+     */
+    private int lives;
+
+    /**
      * The animations for every direction.
      */
     private final Map<Direction, Sprite> sprites;
@@ -40,7 +45,7 @@ public class Player extends Unit {
     private Unit killer;
 
     /**
-     * Creates a new player with a score of 0 points.
+     * Creates a new player with a score of 0 points and 1 life.
      *
      * @param spriteMap
      *            A map containing a sprite for this player for every direction.
@@ -49,6 +54,7 @@ public class Player extends Unit {
      */
     protected Player(Map<Direction, Sprite> spriteMap, AnimatedSprite deathAnimation) {
         this.score = 0;
+        this.lives = 1;
         this.alive = true;
         this.sprites = spriteMap;
         this.deathSprite = deathAnimation;
@@ -76,10 +82,14 @@ public class Player extends Unit {
         if (isAlive) {
             deathSprite.setAnimating(false);
             this.killer = null;
-        }
-        if (!isAlive) {
+        } else {
             deathSprite.restart();
-            this.alive = false; // Game over
+            if (lives > 1) {
+                lives--;
+                this.alive = true; // Revive player
+            } else {
+                this.alive = false; // Game over
+            }
         }
     }
 
@@ -108,6 +118,22 @@ public class Player extends Unit {
      */
     public int getScore() {
         return score;
+    }
+
+    /**
+     * Returns the number of lives remaining.
+     *
+     * @return The number of lives left.
+     */
+    public int getLives() {
+        return lives;
+    }
+
+    /**
+     * Adds an extra life to the player.
+     */
+    public void addLife() {
+        this.lives++;
     }
 
     @Override
